@@ -1,6 +1,7 @@
 package com.amine.deblur;
 
 import android.Manifest;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private Button btnSelect;
+    private Button btnDeblur;
     private RecyclerView rclPhoto;
     private PhotoAdapter photoAdapter;
     private ArrayList<Uri> myPictures;
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btnSelect = findViewById(R.id.btn_select);
+        btnDeblur = findViewById(R.id.btn_deblur);
         rclPhoto = findViewById(R.id.rcl_images);
 
 
@@ -49,6 +53,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 requestPermissions();
+            }
+        });
+
+        btnDeblur.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                deblur();
+
             }
         });
     }
@@ -99,6 +112,17 @@ public class MainActivity extends AppCompatActivity {
     public void imageSetter(){
 
         photoAdapter.setImages(myPictures);
+
+    }
+
+
+    public void deblur(){
+
+        Intent intent = new Intent(this, DeblurActivity.class);
+        Bundle args = new Bundle();
+        args.putSerializable("ARRAYLIST",(Serializable)myPictures);
+        intent.putExtra("images",args);
+        startActivity(intent);
 
     }
 }

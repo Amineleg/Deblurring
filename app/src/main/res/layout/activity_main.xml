@@ -29,6 +29,16 @@
 
     </android.support.v7.widget.RecyclerView>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Deblur Images"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
+        android:id="@+id/btn_deblur"
+        android:background="@color/colorPrimary" />
+
 
 
 

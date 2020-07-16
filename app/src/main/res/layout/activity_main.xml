@@ -39,7 +39,11 @@
         android:id="@+id/btn_deblur"
         android:background="@color/colorPrimary" />
 
-
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
 
 
 </LinearLayout>

@@ -10,8 +10,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -29,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rclPhoto;
     private PhotoAdapter photoAdapter;
     private ArrayList<Uri> myPictures;
+    private TextView txt;
 
 
     @Override
@@ -36,9 +41,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(!Python.isStarted()){
+            Python.start(new AndroidPlatform(this));
+        }
+
         btnSelect = findViewById(R.id.btn_select);
         btnDeblur = findViewById(R.id.btn_deblur);
         rclPhoto = findViewById(R.id.rcl_images);
+        txt = findViewById(R.id.textView);
 
 
         photoAdapter = new PhotoAdapter(this);
@@ -53,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 requestPermissions();
+                String texteToShow = getPythonMethod();
+                txt.setText(texteToShow);
             }
         });
 
@@ -64,6 +76,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private String getPythonMethod(){
+        Python python = Python.getInstance();
+        PyObject pythonFile = python.getModule("helloworld");
+        return pythonFile.callAttr("helloworld").toString();
     }
 
     private void requestPermissions(){

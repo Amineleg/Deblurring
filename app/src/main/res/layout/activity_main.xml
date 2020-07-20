@@ -39,6 +39,16 @@
         android:id="@+id/btn_deblur"
         android:background="@color/colorPrimary" />
 
+    <Button
+        android:id="@+id/btn_deb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/colorPrimary"
+        android:text="Deblur" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"

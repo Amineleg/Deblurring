@@ -19,6 +19,7 @@ import com.chaquo.python.android.AndroidPlatform;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Uri> myPictures;
     private TextView txt;
 
+    private Button btnTest;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnSelect = findViewById(R.id.btn_select);
         btnDeblur = findViewById(R.id.btn_deblur);
+        btnTest = findViewById(R.id.btn_deb);
         rclPhoto = findViewById(R.id.rcl_images);
         txt = findViewById(R.id.textView);
 
@@ -63,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 requestPermissions();
-                String texteToShow = getPythonMethod();
-                txt.setText(texteToShow);
             }
         });
 
@@ -76,12 +79,25 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        btnTest.setOnClickListener(new  View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+                String texteToShow = getPythonMethod();
+                Uri uri = Uri.fromFile(new File(texteToShow));
+                myPictures.add(0,uri);
+                txt.setText(texteToShow);
+
+            }
+        });
     }
+
 
     private String getPythonMethod(){
         Python python = Python.getInstance();
         PyObject pythonFile = python.getModule("helloworld");
-        return pythonFile.callAttr("helloworld").toString();
+        return pythonFile.callAttr("pro", myPictures.get(0).getPath()).toString();
     }
 
     private void requestPermissions(){

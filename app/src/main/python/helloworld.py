@@ -1,6 +1,9 @@
 import csv
 from os.path import dirname, join
-
+import imageio
+import numpy as np
+from PIL import Image
+from keras.models import load_model
 
 filename = join(dirname(__file__), "changed2.csv")
 
@@ -26,4 +29,12 @@ def helloworld():
 
     return reader()
 
+frame_shape = (84, 84)
 
+def pro(filepath):
+    img = Image.open(filepath)
+    img = np.array(img)[60:-18, 35:-20, 2]
+    path = join(dirname(__file__), "jeu.png")
+    #img = np.array(np.resize(img, frame_shape))
+    imageio.imwrite(path, np.array(img))
+    return path

@@ -90,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
                 Uri uri = Uri.fromFile(new File(text1));
                 myPictures.add(0,uri);
                 txt.setText(text1);
+
+                Toast.makeText(getApplicationContext(), "Finished Deblurring the image!", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -157,6 +160,9 @@ public class MainActivity extends AppCompatActivity {
     public void imageSetter(){
 
         photoAdapter.setImages(myPictures);
+
+        txt.setText(myPictures.get(0).getPath());
+
 
     }
 

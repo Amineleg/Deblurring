@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.chaquo.python'
 
 android {
     compileSdkVersion 28
@@ -9,7 +10,31 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+
+
+        sourceSets {
+            main {
+                python {
+                    srcDirs = ["src/main/python"]
+                }
+            }
+        }
+        python {
+            buildPython "c:/users/user/appdata/local/programs/python/python37/python.exe"
+            pip {
+                options "--timeout", "1000"
+                install "imageio"
+                install "pillow"
+                install "tensorflow"
+                install "keras==2.3.1"
+            }
+        }
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -23,6 +48,7 @@ android {
 }
 
 dependencies {
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'

@@ -10,12 +10,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
+import java.io.File;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rclPhoto;
     private PhotoAdapter photoAdapter;
     private ArrayList<Uri> myPictures;
+    private TextView txt;
+
+    private Button btnTest;
+
 
 
     @Override
@@ -36,9 +46,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(!Python.isStarted()){
+            Python.start(new AndroidPlatform(this));
+        }
+
         btnSelect = findViewById(R.id.btn_select);
         btnDeblur = findViewById(R.id.btn_deblur);
+        btnTest = findViewById(R.id.btn_deb);
         rclPhoto = findViewById(R.id.rcl_images);
+        txt = findViewById(R.id.textView);
 
 
         photoAdapter = new PhotoAdapter(this);
@@ -64,6 +80,35 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        btnTest.setOnClickListener(new  View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+                Object[] textToShow = getPythonMethod();
+                String text1 = textToShow[0].toString();
+                Uri uri = Uri.fromFile(new File(text1));
+                myPictures.add(0,uri);
+                txt.setText(text1);
+
+                Toast.makeText(getApplicationContext(), "Finished Deblurring the image!", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+
+    private Object[] getPythonMethod(){
+        Python python = Python.getInstance();
+
+        PyObject pythonFile = python.getModule("model");
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i<myPictures.size(); i++){
+            list.add(myPictures.get(i).getPath());
+        }
+        String[] paths = list.toArray(new String[list.size()]);
+        PyObject r = pythonFile.callAttr("calculate", paths);
+        return r.asSet().toArray();
     }
 
     private void requestPermissions(){
@@ -90,16 +135,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openBottomPicker(){
-        TedBottomPicker.OnMultiImageSelectedListener listener = new TedBottomPicker.OnMultiImageSelectedListener() {
+        TedBottomPicker.OnImageSelectedListener listener = new TedBottomPicker.OnImageSelectedListener() {
             @Override
-            public void onImagesSelected(ArrayList<Uri> uriList) {
+            public void onImageSelected(Uri uri) {
+                ArrayList<Uri> uriList = new ArrayList<Uri>();
+                uriList.add(uri);
                 myPictures = uriList;
                 imageSetter();
+
             }
         };
 
         TedBottomPicker tedBottomPicker =  new TedBottomPicker.Builder(MainActivity.this)
-                .setOnMultiImageSelectedListener(listener)
+                .setOnImageSelectedListener(listener)
                 .setCompleteButtonText("DONE")
                 .setEmptySelectionText("NO IMAGE SELECTED!")
                 .create();
@@ -112,6 +160,9 @@ public class MainActivity extends AppCompatActivity {
     public void imageSetter(){
 
         photoAdapter.setImages(myPictures);
+
+        txt.setText(myPictures.get(0).getPath());
+
 
     }
 

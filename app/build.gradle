@@ -21,12 +21,13 @@ android {
             }
         }
         python {
-            buildPython "/urs/local/bin/python"
-            buildPython "python"
+            buildPython "c:/users/user/appdata/local/programs/python/python37/python.exe"
             pip {
+                options "--timeout", "1000"
                 install "imageio"
                 install "pillow"
-                install "keras"
+                install "tensorflow"
+                install "keras==2.3.1"
             }
         }
         ndk {

@@ -21,6 +21,7 @@ import com.gun0912.tedpermission.TedPermission;
 
 import java.io.File;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,20 +85,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String texteToShow = getPythonMethod();
-                Uri uri = Uri.fromFile(new File(texteToShow));
+                Object[] textToShow = getPythonMethod();
+                String text1 = textToShow[0].toString();
+                Uri uri = Uri.fromFile(new File(text1));
                 myPictures.add(0,uri);
-                txt.setText(texteToShow);
-
+                txt.setText(text1);
             }
         });
     }
 
 
-    private String getPythonMethod(){
+    private Object[] getPythonMethod(){
         Python python = Python.getInstance();
-        PyObject pythonFile = python.getModule("helloworld");
-        return pythonFile.callAttr("pro", myPictures.get(0).getPath()).toString();
+
+        PyObject pythonFile = python.getModule("model");
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i<myPictures.size(); i++){
+            list.add(myPictures.get(i).getPath());
+        }
+        String[] paths = list.toArray(new String[list.size()]);
+        PyObject r = pythonFile.callAttr("calculate", paths);
+        return r.asSet().toArray();
     }
 
     private void requestPermissions(){
@@ -124,16 +132,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openBottomPicker(){
-        TedBottomPicker.OnMultiImageSelectedListener listener = new TedBottomPicker.OnMultiImageSelectedListener() {
+        TedBottomPicker.OnImageSelectedListener listener = new TedBottomPicker.OnImageSelectedListener() {
             @Override
-            public void onImagesSelected(ArrayList<Uri> uriList) {
+            public void onImageSelected(Uri uri) {
+                ArrayList<Uri> uriList = new ArrayList<Uri>();
+                uriList.add(uri);
                 myPictures = uriList;
                 imageSetter();
+
             }
         };
 
         TedBottomPicker tedBottomPicker =  new TedBottomPicker.Builder(MainActivity.this)
-                .setOnMultiImageSelectedListener(listener)
+                .setOnImageSelectedListener(listener)
                 .setCompleteButtonText("DONE")
                 .setEmptySelectionText("NO IMAGE SELECTED!")
                 .create();

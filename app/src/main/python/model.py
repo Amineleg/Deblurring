@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from keras.layers import Conv2D, BatchNormalization, Activation, Lambda, Dense, Input, Conv2D, MaxPooling2D, UpSampling2D, concatenate, Add
+from keras.layers import Conv2D, BatchNormalization, Activation, Lambda, Dense, Input, MaxPooling2D, UpSampling2D, concatenate, Add
 from keras.models import Model, Input
 from keras.layers.advanced_activations import LeakyReLU
 from keras.layers.core import Dropout, Dense, Flatten, Lambda
@@ -8,33 +8,14 @@ from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
 
 from os.path import dirname, join
 import imageio
-
 import numpy as np
-
-
-
-import tensorflow as tf
-
-from keras.models import Model
 from keras.engine import InputSpec
 from keras.engine.topology import Layer
-from keras.layers import Input, Conv2D, Activation, BatchNormalization
-from keras.layers.merge import Add
 from keras.utils import conv_utils
 import keras.backend as K
-from keras.layers.core import Dropout
 
 
 def res_block(input, filters, kernel_size=(3, 3), strides=(1, 1), use_dropout=False):
-    """
-    Instanciate a Keras Resnet Block using sequential API.
-    :param input: Input tensor
-    :param filters: Number of filters to use
-    :param kernel_size: Shape of the kernel for the convolution
-    :param strides: Shape of the strides for the convolution
-    :param use_dropout: Boolean value to determine the use of dropout
-    :return: Keras Model
-    """
     x = ReflectionPadding2D((1, 1))(input)
     x = Conv2D(filters=filters,
                kernel_size=kernel_size,
@@ -232,8 +213,3 @@ def calculate(*args):
 
     return paths
 
-
-
-
-def ver(*args):
-    return args

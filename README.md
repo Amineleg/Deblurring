@@ -10,4 +10,4 @@ The datasets used in this project are :
 
 The generator in the GAN was found in this git repo : https://github.com/RaphaelMeudec/deblur-gan
 
-The apk file can be found in the folder release
+The apk file can be found here : https://drive.google.com/file/d/1dM5DUd2nCibOFYz0GBsTHMPh6jmHo8Br/view?usp=sharing

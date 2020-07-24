@@ -1,6 +1,8 @@
 package com.amine.deblur;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -101,14 +103,36 @@ public class MainActivity extends AppCompatActivity {
     private Object[] getPythonMethod(){
         Python python = Python.getInstance();
 
-        PyObject pythonFile = python.getModule("model");
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i<myPictures.size(); i++){
-            list.add(myPictures.get(i).getPath());
+
+        Context context = this;
+
+        ActivityManager actManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
+        actManager.getMemoryInfo(memInfo);
+        long totalMemory = memInfo.totalMem;
+
+        if (totalMemory> 5000000000.0){
+            PyObject pythonFile = python.getModule("model");
+            List<String> list = new ArrayList<>();
+            for (int i = 0; i<myPictures.size(); i++){
+                list.add(myPictures.get(i).getPath());
+            }
+            String[] paths = list.toArray(new String[list.size()]);
+            PyObject r = pythonFile.callAttr("calculate", paths);
+            return r.asSet().toArray();
         }
-        String[] paths = list.toArray(new String[list.size()]);
-        PyObject r = pythonFile.callAttr("calculate", paths);
-        return r.asSet().toArray();
+        else{
+            PyObject pythonFile = python.getModule("small_model");
+            List<String> list = new ArrayList<>();
+            for (int i = 0; i<myPictures.size(); i++){
+                list.add(myPictures.get(i).getPath());
+            }
+            String[] paths = list.toArray(new String[list.size()]);
+            PyObject r = pythonFile.callAttr("calculate", paths);
+            return r.asSet().toArray();
+        }
+
+
     }
 
     private void requestPermissions(){
@@ -162,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
         photoAdapter.setImages(myPictures);
 
         txt.setText(myPictures.get(0).getPath());
-
 
     }
 

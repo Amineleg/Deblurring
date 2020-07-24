@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DeblurActivity"
+    android:background="#cce6ff"
     android:orientation="vertical"
     android:gravity="center_horizontal|center_vertical">
 
